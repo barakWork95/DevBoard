@@ -1,0 +1,29 @@
+# Compiled output
+dist/
+build/
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+
+# IDEs and editors
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Miscellaneous
+*.pem
+.env
+.env.*
+!.env.example
+
+# System files
+.DS_Store
+Thumbs.db

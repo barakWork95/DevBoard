@@ -1,0 +1,18 @@
+# Compiled output
+dist/
+
+# Node
+node_modules/
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Prisma generated
+/src/generated/
+
+# System files
+.DS_Store

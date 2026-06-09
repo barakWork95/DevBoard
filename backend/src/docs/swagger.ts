@@ -326,6 +326,267 @@ export const swaggerDocument = {
         },
       },
     },
+    // Task API's
+    "/api/tasks": {
+      get: {
+        summary: "Get all tasks (optionally filter by projectId)",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "projectId",
+            in: "query",
+            required: false,
+            schema: { type: "string", format: "uuid" },
+            description: "Filter tasks by project",
+          },
+        ],
+        responses: {
+          200: {
+            description: "Tasks fetched successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Task" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          500: { description: "Internal server error" },
+        },
+      },
+      post: {
+        summary: "Create a new task",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["title", "projectId", "priority", "status"],
+                properties: {
+                  title: { type: "string", example: "Implement login page" },
+                  description: {
+                    type: "string",
+                    example: "Build the login UI",
+                  },
+                  projectId: { type: "string", format: "uuid" },
+                  assignee: { type: "string", format: "uuid" },
+                  parent: { type: "string", format: "uuid" },
+                  labels: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                      enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+                    },
+                  },
+                  status: {
+                    type: "string",
+                    enum: [
+                      "backlog",
+                      "in-progress",
+                      "code-review",
+                      "done",
+                      "released",
+                    ],
+                    example: "backlog",
+                  },
+                  priority: {
+                    type: "string",
+                    enum: ["low", "medium", "high", "critical"],
+                    example: "medium",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Task created successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Task" },
+              },
+            },
+          },
+          400: { description: "Validation error" },
+          401: { description: "Unauthorized" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
+    "/api/tasks/{id}": {
+      get: {
+        summary: "Get a task by ID",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Task fetched successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Task" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+      put: {
+        summary: "Update a task",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  title: { type: "string", example: "Updated task title" },
+                  description: { type: "string" },
+                  assignee: { type: "string", format: "uuid" },
+                  labels: {
+                    type: "array",
+                    items: {
+                      type: "string",
+                      enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+                    },
+                  },
+                  status: {
+                    type: "string",
+                    enum: [
+                      "backlog",
+                      "in-progress",
+                      "code-review",
+                      "done",
+                      "released",
+                    ],
+                  },
+                  priority: {
+                    type: "string",
+                    enum: ["low", "medium", "high", "critical"],
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Task updated successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Task" },
+              },
+            },
+          },
+          400: { description: "Validation error" },
+          401: { description: "Unauthorized" },
+          404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+      delete: {
+        summary: "Delete a task",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        responses: {
+          204: { description: "Task deleted successfully" },
+          401: { description: "Unauthorized" },
+          404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
+    "/api/tasks/{id}/status": {
+      patch: {
+        summary: "Update task status",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["status"],
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: [
+                      "backlog",
+                      "in-progress",
+                      "code-review",
+                      "done",
+                      "released",
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Task status updated successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Task" },
+              },
+            },
+          },
+          400: { description: "Validation error" },
+          401: { description: "Unauthorized" },
+          404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {
@@ -365,6 +626,47 @@ export const swaggerDocument = {
           taskIds: {
             type: "array",
             items: { type: "string", format: "uuid" },
+          },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+      },
+      Task: {
+        type: "object",
+        required: [
+          "id",
+          "title",
+          "creator",
+          "assignee",
+          "projectId",
+          "labels",
+          "status",
+          "priority",
+          "createdAt",
+          "updatedAt",
+        ],
+        properties: {
+          id: { type: "string", format: "uuid" },
+          title: { type: "string" },
+          description: { type: "string" },
+          creator: { type: "string", format: "uuid" },
+          assignee: { type: "string", format: "uuid" },
+          projectId: { type: "string", format: "uuid" },
+          parent: { type: "string", format: "uuid" },
+          labels: {
+            type: "array",
+            items: {
+              type: "string",
+              enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+            },
+          },
+          status: {
+            type: "string",
+            enum: ["backlog", "in-progress", "code-review", "done", "released"],
+          },
+          priority: {
+            type: "string",
+            enum: ["low", "medium", "high", "critical"],
           },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },

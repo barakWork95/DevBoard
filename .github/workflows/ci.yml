@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install shared dependencies
+        run: cd shared && npm install
+
+      - name: Install backend dependencies
+        run: cd backend && npm install
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm install
+
+      - name: Backend type check
+        run: cd backend && npx tsc --noEmit
+
+      - name: Backend build
+        run: cd backend && npm run build
+
+      - name: Frontend lint
+        run: cd frontend && npm run lint
+
+      - name: Frontend build
+        run: cd frontend && npm run build

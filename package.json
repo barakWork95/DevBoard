@@ -1,0 +1,21 @@
+{
+  "name": "devboard",
+  "version": "1.0.0",
+  "description": "Full-stack project management SaaS (Jira/Linear-style) — React, Node.js, PostgreSQL, Redis, WebSockets, AI Assistant. Built as a flagship portfolio project.",
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/barakWork95/DevBoard.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/barakWork95/DevBoard/issues"
+  },
+  "homepage": "https://github.com/barakWork95/DevBoard#readme"
+}

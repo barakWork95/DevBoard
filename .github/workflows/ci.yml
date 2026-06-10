@@ -28,6 +28,9 @@ jobs:
       - name: Install frontend dependencies
         run: cd frontend && npm install
 
+      - name: Generate Prisma client
+        run: cd backend && npx prisma generate
+
       - name: Backend type check
         run: cd backend && npx tsc --noEmit
 

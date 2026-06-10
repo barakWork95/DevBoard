@@ -326,6 +326,84 @@ export const swaggerDocument = {
         },
       },
     },
+    "/api/projects/{id}/members": {
+      get: {
+        summary: "Get all members of specific project",
+        tags: ["Project"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "Members fetched successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    data: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/User" },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          404: { description: "Project not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+      post: {
+        summary: "Add members to specific project",
+        tags: ["Project"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  email: {
+                    type: "array",
+                    items: { type: "string", format: "email" },
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: "Members added successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Project" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          404: { description: "Project not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
     // Task API's
     "/api/tasks": {
       get: {
@@ -583,6 +661,85 @@ export const swaggerDocument = {
           400: { description: "Validation error" },
           401: { description: "Unauthorized" },
           404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
+    // User API's
+    "/api/users/me": {
+      get: {
+        summary: "Get the logged-in user",
+        tags: ["User"],
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "User fetched successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/User" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          500: { description: "Internal server error" },
+        },
+      },
+      put: {
+        summary: "Update User",
+        tags: ["User"],
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  name: { type: "string", example: "Updated user name" },
+                  email: { type: "string", format: "email" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "User updated successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/User" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
+    "/api/users/{id}": {
+      get: {
+        summary: "Get User by Id",
+        tags: ["User"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string", format: "uuid" },
+          },
+        ],
+        responses: {
+          200: {
+            description: "User fetched successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/User" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          404: { description: "User not found" },
           500: { description: "Internal server error" },
         },
       },

@@ -761,10 +761,6 @@ export const swaggerDocument = {
           name: { type: "string" },
           email: { type: "string", format: "email" },
           role: { type: "string", enum: ["admin", "member"] },
-          projectIds: {
-            type: "array",
-            items: { type: "string", format: "uuid" },
-          },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
         },
@@ -776,14 +772,6 @@ export const swaggerDocument = {
           name: { type: "string" },
           owner: { type: "string", format: "uuid" },
           status: { type: "string", enum: ["backlog", "active", "complete"] },
-          members: {
-            type: "array",
-            items: { type: "string", format: "uuid" },
-          },
-          taskIds: {
-            type: "array",
-            items: { type: "string", format: "uuid" },
-          },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
         },
@@ -806,10 +794,10 @@ export const swaggerDocument = {
           id: { type: "string", format: "uuid" },
           title: { type: "string" },
           description: { type: "string" },
-          creator: { type: "string", format: "uuid" },
-          assignee: { type: "string", format: "uuid" },
+          creatorId: { type: "string", format: "uuid" },
+          assigneeId: { type: "string", format: "uuid" },
           projectId: { type: "string", format: "uuid" },
-          parent: { type: "string", format: "uuid" },
+          parentId: { type: "string", format: "uuid" },
           labels: {
             type: "array",
             items: {

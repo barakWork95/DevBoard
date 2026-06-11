@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ProjectStatus {
+  BACKLOG
+  ACTIVE
+  COMPLETE
+}
+
+enum TaskStatus {
+  BACKLOG
+  IN_PROGRESS
+  CODE_REVIEW
+  DONE
+  RELEASED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum TaskLabel {
+  FE
+  BE
+  QA
+  PM
+  UI_UX
+  DEVOPS
+}
+
+model User { 
+  id   String   @id @default(cuid())
+  password String
+  email String   @unique
+  name  String
+  role  Role     @default(MEMBER) 
+  projectMembers ProjectMember[]
+  createdTasks  Task[] @relation("TaskCreator")
+  assignedTasks Task[] @relation("TaskAssignee")
+  ownedProjects Project[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Project { 
+  id   String   @id @default(cuid())
+  name  String
+  owner    User    @relation(fields: [ownerId], references: [id])
+  ownerId  String
+  tasks Task[]
+  members ProjectMember[]
+  status  ProjectStatus     @default(BACKLOG) 
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Task {
+  id   String   @id @default(cuid())
+  title  String
+  description String?
+  labels TaskLabel[]
+  creator   User   @relation("TaskCreator", fields: [creatorId], references: [id])
+  creatorId String
+  assignee  User?  @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  assigneeId String?
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  parent   Task?  @relation("subtasks", fields: [parentId], references: [id])
+  parentId String?
+  children Task[] @relation("subtasks")
+  status TaskStatus @default(BACKLOG)
+  priority TaskPriority
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ProjectMember {
+  id   String   @id @default(cuid())
+  user    User    @relation(fields: [userId], references: [id])
+  userId  String
+  project    Project    @relation(fields: [projectId], references: [id])
+  projectId  String
+  role  Role     @default(MEMBER)
+  createdAt  DateTime @default(now())
+  @@unique([userId, projectId])
+}

@@ -5,7 +5,6 @@ export const UserSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   role: z.enum(["admin", "member"]),
-  projectIds: z.array(z.string().uuid()),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });

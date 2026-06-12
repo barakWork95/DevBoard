@@ -1,0 +1,37 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { create, findByEmail } from "../repositories/UserRepository";
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+const saltRounds = 10;
+
+export async function register({ name, email, password }: RegisterData) {
+  const existingUser = await findByEmail(email);
+  if (existingUser) throw new Error("Email already in use");
+
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return create({ name, email, password: hashedPassword });
+}
+
+export async function login(data: { email: string; password: string }) {
+  const user = await findByEmail(data.email);
+  if (!user) throw new Error("Invalid credentials");
+  const isMatch = await bcrypt.compare(data.password, user.password);
+  if (!isMatch) throw new Error("Invalid credentials");
+  const payload = { id: user.id, email: user.email, role: user.role };
+  const secret = process.env.JWT_SECRET!;
+  const accessToken = jwt.sign(payload, secret, { expiresIn: "15m" });
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
+    expiresIn: "7d",
+  });
+  return { accessToken, refreshToken };
+}
+
+export function logout(refreshToken: string) {
+  return;
+}

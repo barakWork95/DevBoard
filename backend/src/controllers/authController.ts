@@ -14,7 +14,25 @@ export async function register(req: Request, res: Response) {
 export async function login(req: Request, res: Response) {
   try {
     const tokens = await authService.login({ ...req.body });
-    return res.status(200).json({ tokens });
+    return res.status(200).json(tokens);
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+export async function logout(req: Request, res: Response) {
+  try {
+    authService.logout(req.body.refreshToken);
+    return res.status(200).json("Logout successfully");
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+export async function refresh(req: Request, res: Response) {
+  try {
+    const tokens = await authService.refresh(req.body.refreshToken);
+    return res.status(200).json(tokens);
   } catch (error: any) {
     return res.status(400).json({ message: error.message });
   }

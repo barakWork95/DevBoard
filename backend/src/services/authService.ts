@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import redis from "../db/redis";
 import { create, findByEmail } from "../repositories/UserRepository";
 
 interface RegisterData {
@@ -32,6 +33,35 @@ export async function login(data: { email: string; password: string }) {
   return { accessToken, refreshToken };
 }
 
-export function logout(refreshToken: string) {
+export async function logout(refreshToken: string) {
+  const decodedToken = jwt.decode(refreshToken) as JwtPayload;
+  // remaining seconds to the expire date
+  const ttl = decodedToken?.exp
+    ? decodedToken.exp - Math.floor(Date.now() / 1000)
+    : 604800;
+  await redis.set(`blocklist:${refreshToken}`, refreshToken, "EX", ttl);
   return;
+}
+
+export async function refresh(refreshToken: string) {
+  const isListed = await redis.exists(`blocklist:${refreshToken}`);
+  if (isListed) throw new Error("Invalid token");
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!);
+    const { id, email, name, role } = decoded as {
+      id: string;
+      email: string;
+      name: string;
+      role: string;
+    };
+    const payload = { id, email, name, role };
+    const secret = process.env.JWT_SECRET!;
+    const newAccessToken = jwt.sign(payload, secret, { expiresIn: "15m" });
+    const newRefreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
+      expiresIn: "7d",
+    });
+    return { newAccessToken, newRefreshToken };
+  } catch {
+    throw new Error("Invalid token");
+  }
 }

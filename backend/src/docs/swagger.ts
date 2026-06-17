@@ -580,9 +580,24 @@ export const swaggerDocument = {
             schema: { type: "string" },
           },
         ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["projectId"],
+                properties: {
+                  projectId: { type: "string" },
+                },
+              },
+            },
+          },
+        },
         responses: {
           204: { description: "Task deleted successfully" },
           401: { description: "Unauthorized" },
+          403: { description: "Permission denied" },
           404: { description: "Task not found" },
           500: { description: "Internal server error" },
         },
@@ -634,6 +649,50 @@ export const swaggerDocument = {
             },
           },
           401: { description: "Unauthorized" },
+          404: { description: "Task not found" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
+    "/api/tasks/{id}/assignee": {
+      patch: {
+        summary: "Update task assignee",
+        tags: ["Task"],
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "string" },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["projectId", "assigneeId"],
+                properties: {
+                  projectId: { type: "string" },
+                  assigneeId: { type: "string" },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Task assignee updated successfully",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Task" },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          403: { description: "Permission denied" },
           404: { description: "Task not found" },
           500: { description: "Internal server error" },
         },

@@ -3,6 +3,7 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerDocument } from "./src/docs/swagger";
 import authRoutes from "./src/routes/authRoutes";
 import projectRoutes from "./src/routes/projectRoutes";
+import taskRoutes from "./src/routes/taskRoutes";
 import { authenticate } from "./src/middleware/authenticate";
 
 const app = express();
@@ -22,6 +23,10 @@ app.use(authenticate);
 
 app.use("/api/projects", projectRoutes);
 
+app.use("/api/tasks", taskRoutes);
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(
+    `Server running on port ${PORT} - Visit: http://localhost:3000/api/docs`,
+  );
 });

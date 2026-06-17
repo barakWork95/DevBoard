@@ -124,12 +124,9 @@ export const swaggerDocument = {
           },
         },
         responses: {
-          204: {
-            description: "Logged out successfully",
-            content: {},
-          },
-          500: { description: "Internal server error" },
+          204: { description: "Logged out successfully", content: {} },
           401: { description: "Invalid refresh token" },
+          500: { description: "Internal server error" },
         },
       },
     },
@@ -158,15 +155,13 @@ export const swaggerDocument = {
               "application/json": {
                 schema: {
                   type: "object",
-                  properties: {
-                    accessToken: { type: "string" },
-                  },
+                  properties: { accessToken: { type: "string" } },
                 },
               },
             },
           },
-          500: { description: "Internal server error" },
           401: { description: "Invalid refresh token" },
+          500: { description: "Internal server error" },
         },
       },
     },
@@ -182,13 +177,8 @@ export const swaggerDocument = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    data: {
-                      type: "array",
-                      items: { $ref: "#/components/schemas/Project" },
-                    },
-                  },
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Project" },
                 },
               },
             },
@@ -210,11 +200,6 @@ export const swaggerDocument = {
                 required: ["name"],
                 properties: {
                   name: { type: "string", example: "DevBoard" },
-                  status: {
-                    type: "string",
-                    enum: ["backlog", "active", "complete"],
-                    example: "backlog",
-                  },
                 },
               },
             },
@@ -245,7 +230,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
@@ -262,7 +247,7 @@ export const swaggerDocument = {
           500: { description: "Internal server error" },
         },
       },
-      put: {
+      patch: {
         summary: "Update a project",
         tags: ["Project"],
         security: [{ bearerAuth: [] }],
@@ -271,7 +256,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         requestBody: {
@@ -284,7 +269,7 @@ export const swaggerDocument = {
                   name: { type: "string", example: "DevBoard v2" },
                   status: {
                     type: "string",
-                    enum: ["backlog", "active", "complete"],
+                    enum: ["BACKLOG", "ACTIVE", "COMPLETE"],
                   },
                 },
               },
@@ -300,8 +285,8 @@ export const swaggerDocument = {
               },
             },
           },
-          400: { description: "Validation error" },
           401: { description: "Unauthorized" },
+          403: { description: "Permission denied" },
           404: { description: "Project not found" },
           500: { description: "Internal server error" },
         },
@@ -315,12 +300,13 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
           204: { description: "Project deleted successfully" },
           401: { description: "Unauthorized" },
+          403: { description: "Permission denied" },
           404: { description: "Project not found" },
           500: { description: "Internal server error" },
         },
@@ -328,7 +314,7 @@ export const swaggerDocument = {
     },
     "/api/projects/{id}/members": {
       get: {
-        summary: "Get all members of specific project",
+        summary: "Get all members of a project",
         tags: ["Project"],
         security: [{ bearerAuth: [] }],
         parameters: [
@@ -336,7 +322,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
@@ -345,13 +331,8 @@ export const swaggerDocument = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    data: {
-                      type: "array",
-                      items: { $ref: "#/components/schemas/User" },
-                    },
-                  },
+                  type: "array",
+                  items: { $ref: "#/components/schemas/User" },
                 },
               },
             },
@@ -362,7 +343,7 @@ export const swaggerDocument = {
         },
       },
       post: {
-        summary: "Add members to specific project",
+        summary: "Add members to a project",
         tags: ["Project"],
         security: [{ bearerAuth: [] }],
         parameters: [
@@ -370,7 +351,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         requestBody: {
@@ -380,7 +361,7 @@ export const swaggerDocument = {
               schema: {
                 type: "object",
                 properties: {
-                  email: {
+                  emails: {
                     type: "array",
                     items: { type: "string", format: "email" },
                   },
@@ -415,7 +396,7 @@ export const swaggerDocument = {
             name: "projectId",
             in: "query",
             required: false,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
             description: "Filter tasks by project",
           },
         ],
@@ -425,13 +406,8 @@ export const swaggerDocument = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    data: {
-                      type: "array",
-                      items: { $ref: "#/components/schemas/Task" },
-                    },
-                  },
+                  type: "array",
+                  items: { $ref: "#/components/schemas/Task" },
                 },
               },
             },
@@ -457,31 +433,31 @@ export const swaggerDocument = {
                     type: "string",
                     example: "Build the login UI",
                   },
-                  projectId: { type: "string", format: "uuid" },
-                  assignee: { type: "string", format: "uuid" },
-                  parent: { type: "string", format: "uuid" },
+                  projectId: { type: "string" },
+                  assigneeId: { type: "string" },
+                  parentId: { type: "string" },
                   labels: {
                     type: "array",
                     items: {
                       type: "string",
-                      enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+                      enum: ["FE", "BE", "DEVOPS", "QA", "UI_UX", "PM"],
                     },
                   },
                   status: {
                     type: "string",
                     enum: [
-                      "backlog",
-                      "in-progress",
-                      "code-review",
-                      "done",
-                      "released",
+                      "BACKLOG",
+                      "IN_PROGRESS",
+                      "CODE_REVIEW",
+                      "DONE",
+                      "RELEASED",
                     ],
-                    example: "backlog",
+                    example: "BACKLOG",
                   },
                   priority: {
                     type: "string",
-                    enum: ["low", "medium", "high", "critical"],
-                    example: "medium",
+                    enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+                    example: "MEDIUM",
                   },
                 },
               },
@@ -513,7 +489,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
@@ -530,7 +506,7 @@ export const swaggerDocument = {
           500: { description: "Internal server error" },
         },
       },
-      put: {
+      patch: {
         summary: "Update a task",
         tags: ["Task"],
         security: [{ bearerAuth: [] }],
@@ -539,7 +515,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         requestBody: {
@@ -551,27 +527,27 @@ export const swaggerDocument = {
                 properties: {
                   title: { type: "string", example: "Updated task title" },
                   description: { type: "string" },
-                  assignee: { type: "string", format: "uuid" },
+                  assigneeId: { type: "string" },
                   labels: {
                     type: "array",
                     items: {
                       type: "string",
-                      enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+                      enum: ["FE", "BE", "DEVOPS", "QA", "UI_UX", "PM"],
                     },
                   },
                   status: {
                     type: "string",
                     enum: [
-                      "backlog",
-                      "in-progress",
-                      "code-review",
-                      "done",
-                      "released",
+                      "BACKLOG",
+                      "IN_PROGRESS",
+                      "CODE_REVIEW",
+                      "DONE",
+                      "RELEASED",
                     ],
                   },
                   priority: {
                     type: "string",
-                    enum: ["low", "medium", "high", "critical"],
+                    enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
                   },
                 },
               },
@@ -587,7 +563,6 @@ export const swaggerDocument = {
               },
             },
           },
-          400: { description: "Validation error" },
           401: { description: "Unauthorized" },
           404: { description: "Task not found" },
           500: { description: "Internal server error" },
@@ -602,7 +577,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
@@ -623,7 +598,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         requestBody: {
@@ -637,11 +612,11 @@ export const swaggerDocument = {
                   status: {
                     type: "string",
                     enum: [
-                      "backlog",
-                      "in-progress",
-                      "code-review",
-                      "done",
-                      "released",
+                      "BACKLOG",
+                      "IN_PROGRESS",
+                      "CODE_REVIEW",
+                      "DONE",
+                      "RELEASED",
                     ],
                   },
                 },
@@ -658,7 +633,6 @@ export const swaggerDocument = {
               },
             },
           },
-          400: { description: "Validation error" },
           401: { description: "Unauthorized" },
           404: { description: "Task not found" },
           500: { description: "Internal server error" },
@@ -684,8 +658,8 @@ export const swaggerDocument = {
           500: { description: "Internal server error" },
         },
       },
-      put: {
-        summary: "Update User",
+      patch: {
+        summary: "Update logged-in user",
         tags: ["User"],
         security: [{ bearerAuth: [] }],
         requestBody: {
@@ -718,7 +692,7 @@ export const swaggerDocument = {
     },
     "/api/users/{id}": {
       get: {
-        summary: "Get User by Id",
+        summary: "Get user by ID",
         tags: ["User"],
         security: [{ bearerAuth: [] }],
         parameters: [
@@ -726,7 +700,7 @@ export const swaggerDocument = {
             name: "id",
             in: "path",
             required: true,
-            schema: { type: "string", format: "uuid" },
+            schema: { type: "string" },
           },
         ],
         responses: {
@@ -757,10 +731,10 @@ export const swaggerDocument = {
       User: {
         type: "object",
         properties: {
-          id: { type: "string", format: "uuid" },
+          id: { type: "string" },
           name: { type: "string" },
           email: { type: "string", format: "email" },
-          role: { type: "string", enum: ["admin", "member"] },
+          role: { type: "string", enum: ["ADMIN", "MEMBER"] },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
         },
@@ -768,50 +742,38 @@ export const swaggerDocument = {
       Project: {
         type: "object",
         properties: {
-          id: { type: "string", format: "uuid" },
+          id: { type: "string" },
           name: { type: "string" },
-          owner: { type: "string", format: "uuid" },
-          status: { type: "string", enum: ["backlog", "active", "complete"] },
+          ownerId: { type: "string" },
+          status: { type: "string", enum: ["BACKLOG", "ACTIVE", "COMPLETE"] },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },
         },
       },
       Task: {
         type: "object",
-        required: [
-          "id",
-          "title",
-          "creator",
-          "assignee",
-          "projectId",
-          "labels",
-          "status",
-          "priority",
-          "createdAt",
-          "updatedAt",
-        ],
         properties: {
-          id: { type: "string", format: "uuid" },
+          id: { type: "string" },
           title: { type: "string" },
           description: { type: "string" },
-          creatorId: { type: "string", format: "uuid" },
-          assigneeId: { type: "string", format: "uuid" },
-          projectId: { type: "string", format: "uuid" },
-          parentId: { type: "string", format: "uuid" },
+          creatorId: { type: "string" },
+          assigneeId: { type: "string" },
+          projectId: { type: "string" },
+          parentId: { type: "string" },
           labels: {
             type: "array",
             items: {
               type: "string",
-              enum: ["FE", "BE", "DevOps", "QA", "UI/UX", "PM"],
+              enum: ["FE", "BE", "DEVOPS", "QA", "UI_UX", "PM"],
             },
           },
           status: {
             type: "string",
-            enum: ["backlog", "in-progress", "code-review", "done", "released"],
+            enum: ["BACKLOG", "IN_PROGRESS", "CODE_REVIEW", "DONE", "RELEASED"],
           },
           priority: {
             type: "string",
-            enum: ["low", "medium", "high", "critical"],
+            enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
           },
           createdAt: { type: "string", format: "date-time" },
           updatedAt: { type: "string", format: "date-time" },

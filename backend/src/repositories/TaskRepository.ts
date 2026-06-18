@@ -1,5 +1,5 @@
 import prisma from "../config/prisma";
-import { type TaskLabel, TaskPriority, TaskStatus, Task } from "@prisma/client";
+import { type TaskLabel, TaskPriority, TaskStatus } from "@prisma/client";
 
 export interface CreateTaskData {
   title: string;
@@ -12,7 +12,9 @@ export interface CreateTaskData {
 
 export interface UpdatedTask {
   title?: string;
+  description?: string;
   assigneeId?: string;
+  parentId?: string;
   labels?: TaskLabel[];
   status?: TaskStatus;
   priority?: TaskPriority;

@@ -5,9 +5,17 @@ import authRoutes from "./src/routes/authRoutes";
 import projectRoutes from "./src/routes/projectRoutes";
 import taskRoutes from "./src/routes/taskRoutes";
 import { authenticate } from "./src/middleware/authenticate";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 
 app.get("/", (req, res) => {
   res.send("DevBoard API is running 🚀");

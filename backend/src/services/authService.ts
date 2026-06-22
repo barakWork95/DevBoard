@@ -30,7 +30,8 @@ export async function login(data: { email: string; password: string }) {
   const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET!, {
     expiresIn: "7d",
   });
-  return { accessToken, refreshToken };
+  const { password, ...userWithoutPassword } = user;
+  return { accessToken, refreshToken, user: userWithoutPassword };
 }
 
 export async function logout(refreshToken: string) {

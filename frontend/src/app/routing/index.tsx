@@ -3,6 +3,7 @@ import { PublicRoute } from "./PublicRoutes";
 import { ProtectedRoute } from "./ProtectedRoute";
 import LoginPage from "../views/auth/LoginPage";
 import RegisterPage from "../views/auth/RegisterPage";
+import AppLayout from "../components/AppLayout";
 
 export const MainRoutes = () => {
   return (
@@ -13,7 +14,10 @@ export const MainRoutes = () => {
           <Route path="/register" element={<RegisterPage />} />
         </Route>
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<div>Dashboard</div>} />
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<div>Dashboard</div>} />
+            <Route path="/projects" element={<div>Projects</div>} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

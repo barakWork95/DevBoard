@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import LoginPage from "../views/auth/LoginPage";
 import RegisterPage from "../views/auth/RegisterPage";
 import AppLayout from "../components/AppLayout";
+import ProjectsPage from "../views/projects/ProjectsPage";
 
 export const MainRoutes = () => {
   return (
@@ -16,7 +17,7 @@ export const MainRoutes = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/" element={<div>Dashboard</div>} />
-            <Route path="/projects" element={<div>Projects</div>} />
+            <Route path="/projects" element={<ProjectsPage />} />
           </Route>
         </Route>
       </Routes>

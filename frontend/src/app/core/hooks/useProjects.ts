@@ -3,6 +3,8 @@ import {
   createProject,
   getProjects,
   getProjectById,
+  getProjectMembers,
+  getProjectTasks,
 } from "../services/projectService";
 
 export function useProjects() {
@@ -19,6 +21,19 @@ export function useProjectById(id: string) {
   });
 }
 
+export function useProjectMembers(id: string) {
+  return useQuery({
+    queryKey: ["projectMembers", id],
+    queryFn: () => getProjectMembers(id),
+  });
+}
+
+export function useProjectTasks(id: string) {
+  return useQuery({
+    queryKey: ["projectTasks", id],
+    queryFn: () => getProjectTasks(id),
+  });
+}
 export function useCreateProject() {
   const queryClient = useQueryClient();
 

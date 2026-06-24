@@ -32,6 +32,31 @@ export async function findById(req: Request, res: Response) {
   }
 }
 
+export async function findMembers(req: Request, res: Response) {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    const members = await projectService.findMembers(req.params.id as string);
+    return res.status(200).json(members);
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+}
+
+export async function addMembers(req: Request, res: Response) {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    if (!req.params.id)
+      return res.status(400).json({ message: "Require project ID" });
+    const members = await projectService.addMembers(
+      req.params.id as string,
+      req.body.emails,
+    );
+    return res.status(201).json(members);
+  } catch (error: any) {
+    return res.status(400).json({ message: error.message });
+  }
+}
+
 export async function create(req: Request, res: Response) {
   try {
     if (!req.user) return res.status(401).json({ message: "Unauthorized" });

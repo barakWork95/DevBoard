@@ -5,6 +5,7 @@ import LoginPage from "../views/auth/LoginPage";
 import RegisterPage from "../views/auth/RegisterPage";
 import AppLayout from "../components/AppLayout";
 import ProjectsPage from "../views/projects/ProjectsPage";
+import ProjectDetailPage from "../views/projects/ProjectDetailPage";
 
 export const MainRoutes = () => {
   return (
@@ -18,6 +19,7 @@ export const MainRoutes = () => {
           <Route element={<AppLayout />}>
             <Route path="/" element={<div>Dashboard</div>} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:id" element={<ProjectDetailPage />} />
           </Route>
         </Route>
       </Routes>

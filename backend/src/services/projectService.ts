@@ -11,6 +11,19 @@ export async function findById(userId: string, projectId: string) {
   return project;
 }
 
+export async function findMembers(projectId: string) {
+  const members = await projectRepository.findMembers(projectId);
+  return members;
+}
+
+export async function addMembers(projectId: string, emails: string[]) {
+  const members = await projectRepository.addMembers({
+    projectId,
+    data: { emails },
+  });
+  return members;
+}
+
 export async function create(userId: string, name: string) {
   return projectRepository.create({ ownerId: userId, name });
 }

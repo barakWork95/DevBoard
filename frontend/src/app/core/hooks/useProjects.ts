@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  addMembers,
   createProject,
   getProjects,
   getProjectById,
@@ -41,6 +42,19 @@ export function useCreateProject() {
     mutationFn: (name: string) => createProject(name),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+}
+
+export function useAddMembers(projectId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (emails: string[]) => addMembers(projectId, emails),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["projectMembers", projectId],
+      });
     },
   });
 }

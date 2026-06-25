@@ -30,3 +30,7 @@ export function updateProject(id: string, data: updateProjectData) {
 export function deleteProject(id: string) {
   return axiosInstance.delete(`/api/projects/${id}`);
 }
+
+export function addMembers(id: string, emails: string[]) {
+  return axiosInstance.post(`/api/projects/${id}/members`, { emails });
+}

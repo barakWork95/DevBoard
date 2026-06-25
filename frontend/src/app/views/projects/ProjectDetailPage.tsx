@@ -12,10 +12,16 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import Checkbox from "@mui/material/Checkbox";
 import PersonIcon from "@mui/icons-material/Person";
+import AddIcon from "@mui/icons-material/Add";
 import type { ProjectMember, Task } from "@devboard/shared";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import { useState } from "react";
+import InviteMembersModal from "./InviteMembersModal";
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     data: projectData,
     isLoading: isProjectLoading,
@@ -31,6 +37,9 @@ export default function ProjectDetailPage() {
     isLoading: isTasksLoading,
     isError: isTasksError,
   } = useProjectTasks(id!);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   const renderMembersLoadingState = () => {
     return <div>{/* members skeleton */}</div>;
@@ -110,7 +119,18 @@ export default function ProjectDetailPage() {
             renderMembersErrorState()
           ) : (
             <div>
-              <Typography variant="h6">Members:</Typography>
+              <div className="flex items-center justify-start gap-2">
+                <Tooltip title="Add members">
+                  <IconButton
+                    aria-label="add-members"
+                    size="medium"
+                    onClick={handleOpenModal}
+                  >
+                    <AddIcon color="action" fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+                <Typography variant="h6">Members:</Typography>
+              </div>
               <List dense={true}>
                 {membersData?.data?.map((member: ProjectMember) => (
                   <ListItem key={member.id || member.user.name}>
@@ -130,6 +150,12 @@ export default function ProjectDetailPage() {
           )}
         </div>
       </div>
+      {isModalOpen && (
+        <InviteMembersModal
+          projectId={id as string}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 }

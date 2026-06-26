@@ -18,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { useState } from "react";
 import InviteMembersModal from "./InviteMembersModal";
+import KanbanBoard from "./KanbanBoard";
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -96,7 +97,8 @@ export default function ProjectDetailPage() {
                 <Checkbox />
                 <Typography variant="h6">Tasks:</Typography>
               </div>
-              <List dense={true}>
+              <KanbanBoard tasks={tasksData?.data} />
+              {/* <List dense={true}>
                 {tasksData?.data?.map((task: Task) => (
                   <ListItem key={task.id || task.title}>
                     <Checkbox />
@@ -106,7 +108,7 @@ export default function ProjectDetailPage() {
                     />
                   </ListItem>
                 ))}
-              </List>
+              </List> */}
             </div>
           )}
         </div>

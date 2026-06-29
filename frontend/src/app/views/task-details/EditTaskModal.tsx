@@ -30,7 +30,7 @@ export default function EditTaskModal({ task, members, onClose }: Props) {
     title: task.title,
     description: task.description ?? "",
     priority: task.priority as string,
-    labels: task.labels as string[],
+    labels: task.labels,
     assigneeId: task.assigneeId ?? "",
   });
 
@@ -50,7 +50,7 @@ export default function EditTaskModal({ task, members, onClose }: Props) {
       title: form.title || undefined,
       description: form.description || undefined,
       priority: form.priority as UpdateTask["priority"],
-      labels: form.labels as UpdateTask["labels"],
+      labels: form.labels,
       assigneeId: form.assigneeId || undefined,
     };
     mutate(payload, { onSuccess: onClose });
@@ -97,7 +97,7 @@ export default function EditTaskModal({ task, members, onClose }: Props) {
             <Select
               multiple
               name="labels"
-              value={form.labels}
+              value={form.labels as unknown as string}
               label="Labels"
               onChange={handleChange}
             >

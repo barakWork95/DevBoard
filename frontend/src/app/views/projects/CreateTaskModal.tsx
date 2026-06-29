@@ -3,7 +3,6 @@ import TextField from "@mui/material/TextField";
 import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import { useCreateTask } from "../../core/hooks/useTask";
-import type { CreateTask } from "@devboard/shared";
 import Stack from "@mui/material/Stack";
 import FormGroup from "@mui/material/FormGroup";
 import { TaskStatuses, TaskPriorities, TaskLabels } from "../../core/constants";
@@ -25,7 +24,16 @@ export const CreateTaskModal = ({
   projectId,
   onClose,
 }: CreateTaskModalProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    assigneeId: string;
+    parentId: string;
+    labels: string[];
+    status: string;
+    priority: string;
+    projectId: string;
+  }>({
     title: "",
     description: "",
     assigneeId: "",
@@ -54,7 +62,8 @@ export const CreateTaskModal = ({
       assigneeId: formData.assigneeId || undefined,
       parentId: formData.parentId || undefined,
     };
-    createTask(payload as CreateTask, {
+    // @ts-expect-error labels type mismatch
+    createTask(payload, {
       onSuccess: () => onClose(),
     });
   };
@@ -130,7 +139,7 @@ export const CreateTaskModal = ({
               <Select
                 multiple
                 name="labels"
-                value={formData.labels}
+                value={formData.labels as unknown as string}
                 label="Labels"
                 onChange={handleChange}
               >

@@ -3,24 +3,15 @@
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020"],
-    "rootDir": "../",
+    "rootDir": "./",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["node"],
-    "paths": {
-      "@devboard/shared": ["../shared/types/index.ts"]
-    }
+    "types": ["node"]
   },
-  "include": [
-    "src/**/*",
-    "server.ts",
-    "prisma.config.ts",
-    "generated/**/*",
-    "../shared/types/**/*"
-  ],
+  "include": ["src/**/*", "server.ts", "prisma.config.ts", "generated/**/*"],
   "exclude": ["node_modules", "dist"]
 }

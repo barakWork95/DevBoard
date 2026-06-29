@@ -1,10 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createTask,
+  deleteTask,
   getTaskById,
+  updateTask,
   updateTaskStatus,
 } from "../services/taskService";
-import type { CreateTask, Task } from "@devboard/shared";
+import type { CreateTask, Task, UpdateTask } from "@devboard/shared";
 import type { AxiosResponse } from "axios";
 
 export function useCreateTask(projectId: string) {
@@ -68,6 +70,50 @@ export function useUpdateTaskStatus(projectId: string) {
       queryClient.invalidateQueries({
         queryKey: ["projectTasks", projectId],
       });
+    },
+  });
+}
+
+export function useUpdateTask(taskId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateTask) => updateTask(taskId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["taskById", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+  });
+}
+
+export function useUpdateTaskStatusOnDetail(
+  taskId: string,
+  projectId: string,
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (status: string) =>
+      updateTaskStatus(taskId, { projectId, status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["taskById", taskId] });
+      queryClient.invalidateQueries({ queryKey: ["projectTasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+  });
+}
+
+export function useDeleteTask() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      taskId,
+      projectId,
+    }: {
+      taskId: string;
+      projectId: string;
+    }) => deleteTask(taskId, projectId),
+    onSuccess: (_data, { projectId }) => {
+      queryClient.invalidateQueries({ queryKey: ["projectTasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
     },
   });
 }

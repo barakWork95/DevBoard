@@ -1,5 +1,11 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useTaskById } from "../../core/hooks/useTask";
+import {
+  useTaskById,
+  useUpdateTaskStatusOnDetail,
+  useDeleteTask,
+} from "../../core/hooks/useTask";
+import { useProjectMembers } from "../../core/hooks/useProjects";
 import {
   Box,
   Skeleton,
@@ -9,16 +15,43 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { StatusColors, PriorityColors } from "../../core/constants";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import {
+  StatusColors,
+  PriorityColors,
+  TaskStatuses,
+} from "../../core/constants";
+import EditTaskModal from "./EditTaskModal";
+import type { ProjectMember } from "@devboard/shared";
+
+type MemberWithUserId = ProjectMember & { userId: string };
 
 export default function TaskDetailsPage() {
   const { taskId, id } = useParams();
   const navigate = useNavigate();
+  const [editOpen, setEditOpen] = useState(false);
+
   const { data, isLoading, isError } = useTaskById(taskId!);
   const task = data?.data;
+
+  const { data: membersData } = useProjectMembers(id!);
+
+  const updateStatus = useUpdateTaskStatusOnDetail(taskId!, id!);
+  const deleteTask = useDeleteTask();
+
+  const members: { userId: string; name: string }[] = (
+    (membersData?.data ?? []) as MemberWithUserId[]
+  ).map((m) => ({ userId: m.userId, name: m.user.name }));
+
+  const assigneeName = members.find((m) => m.userId === task?.assigneeId)?.name;
 
   if (isLoading)
     return (
@@ -42,18 +75,51 @@ export default function TaskDetailsPage() {
   const statusColor = StatusColors[task?.status ?? ""] ?? "#6B778C";
   const priorityColor = PriorityColors[task?.priority ?? ""] ?? "#6B778C";
 
+  const handleDelete = () => {
+    deleteTask.mutate(
+      { taskId: taskId!, projectId: id! },
+      { onSuccess: () => navigate(`/projects/${id}`) },
+    );
+  };
+
   return (
     <div className="flex flex-col gap-6 h-full">
-      {/* Back button */}
-      <div className="flex items-center gap-2">
-        <Tooltip title="Back to board">
-          <IconButton size="small" onClick={() => navigate(`/projects/${id}`)}>
-            <ArrowBackIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Typography variant="body2" color="text.secondary">
-          Back to board
-        </Typography>
+      {/* Back button + actions */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Tooltip title="Back to board">
+            <IconButton
+              size="small"
+              onClick={() => navigate(`/projects/${id}`)}
+            >
+              <ArrowBackIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Typography variant="body2" color="text.secondary">
+            Back to board
+          </Typography>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={<EditIcon fontSize="small" />}
+            onClick={() => setEditOpen(true)}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteOutlineOutlinedIcon fontSize="small" />}
+            disabled={deleteTask.isPending}
+            onClick={handleDelete}
+          >
+            {deleteTask.isPending ? "Deleting..." : "Delete"}
+          </Button>
+        </div>
       </div>
 
       {/* Main content */}
@@ -71,15 +137,38 @@ export default function TaskDetailsPage() {
           </Typography>
 
           <div className="flex items-center gap-2">
-            <Chip
-              label={task?.status}
-              size="small"
-              sx={{
-                backgroundColor: `${statusColor}20`,
-                color: statusColor,
-                fontWeight: 600,
-              }}
-            />
+            {/* Inline status select */}
+            <FormControl size="small">
+              <Select
+                value={task?.status ?? ""}
+                onChange={(e) => updateStatus.mutate(e.target.value)}
+                disabled={updateStatus.isPending}
+                sx={{
+                  color: statusColor,
+                  fontWeight: 600,
+                  fontSize: "0.75rem",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: `${statusColor}60`,
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: statusColor,
+                  },
+                  "& .MuiSelect-select": {
+                    py: "4px",
+                    px: "10px",
+                    backgroundColor: `${statusColor}20`,
+                    borderRadius: "16px",
+                  },
+                }}
+              >
+                {TaskStatuses.map((s) => (
+                  <MenuItem key={s} value={s}>
+                    {s}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <Chip
               label={task?.priority}
               size="small"
@@ -163,9 +252,11 @@ export default function TaskDetailsPage() {
                       bgcolor: "secondary.main",
                     }}
                   >
-                    ?
+                    {(assigneeName ?? "?")[0].toUpperCase()}
                   </Avatar>
-                  <Typography variant="body2">{task.assigneeId}</Typography>
+                  <Typography variant="body2">
+                    {assigneeName ?? task.assigneeId}
+                  </Typography>
                 </div>
               ) : (
                 <Typography variant="body2" color="text.disabled">
@@ -204,6 +295,14 @@ export default function TaskDetailsPage() {
           </div>
         </div>
       </div>
+
+      {editOpen && task && (
+        <EditTaskModal
+          task={task}
+          members={members}
+          onClose={() => setEditOpen(false)}
+        />
+      )}
     </div>
   );
 }

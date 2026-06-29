@@ -777,6 +777,66 @@ export const swaggerDocument = {
         },
       },
     },
+    // Stats API's
+    "/api/stats": {
+      get: {
+        summary: "Get dashboard stats for the authenticated user",
+        tags: ["Stats"],
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: "Stats fetched successfully",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    totalProjects: { type: "number", example: 4 },
+                    totalTasks: { type: "number", example: 23 },
+                    tasksByStatus: {
+                      type: "object",
+                      additionalProperties: { type: "number" },
+                      example: {
+                        BACKLOG: 8,
+                        IN_PROGRESS: 10,
+                        CODE_REVIEW: 2,
+                        DONE: 3,
+                      },
+                    },
+                    recentProjects: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/Project" },
+                    },
+                    recentTasks: {
+                      type: "array",
+                      items: {
+                        allOf: [
+                          { $ref: "#/components/schemas/Task" },
+                          {
+                            type: "object",
+                            properties: {
+                              project: {
+                                type: "object",
+                                properties: {
+                                  id: { type: "string" },
+                                  name: { type: "string" },
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          401: { description: "Unauthorized" },
+          500: { description: "Internal server error" },
+        },
+      },
+    },
   },
   components: {
     securitySchemes: {

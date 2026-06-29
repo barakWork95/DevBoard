@@ -7,6 +7,7 @@ import AppLayout from "../components/AppLayout";
 import ProjectsPage from "../views/projects/ProjectsPage";
 import ProjectDetailPage from "../views/projects/ProjectDetailPage";
 import TaskDetailsPage from "../views/task-details/TaskDetailsPage";
+import DashboardPage from "../views/dashboard/DashboardPage";
 
 export const MainRoutes = () => {
   return (
@@ -18,7 +19,7 @@ export const MainRoutes = () => {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<div>Dashboard</div>} />
+            <Route path="/" element={<DashboardPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
             <Route

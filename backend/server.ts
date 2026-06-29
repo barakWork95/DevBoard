@@ -6,6 +6,7 @@ import projectRoutes from "./src/routes/projectRoutes";
 import taskRoutes from "./src/routes/taskRoutes";
 import { authenticate } from "./src/middleware/authenticate";
 import cors from "cors";
+import statsRoutes from "./src/routes/statsRoutes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,8 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/auth", authRoutes);
 
 app.use(authenticate);
+
+app.use("/api/stats", statsRoutes);
 
 app.use("/api/projects", projectRoutes);
 

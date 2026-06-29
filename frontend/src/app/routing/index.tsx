@@ -6,6 +6,7 @@ import RegisterPage from "../views/auth/RegisterPage";
 import AppLayout from "../components/AppLayout";
 import ProjectsPage from "../views/projects/ProjectsPage";
 import ProjectDetailPage from "../views/projects/ProjectDetailPage";
+import TaskDetailsPage from "../views/task-details/TaskDetailsPage";
 
 export const MainRoutes = () => {
   return (
@@ -20,6 +21,10 @@ export const MainRoutes = () => {
             <Route path="/" element={<div>Dashboard</div>} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:id" element={<ProjectDetailPage />} />
+            <Route
+              path="/projects/:id/tasks/:taskId"
+              element={<TaskDetailsPage />}
+            />
           </Route>
         </Route>
       </Routes>

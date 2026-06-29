@@ -22,7 +22,8 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     console.log("active:", active, "over:", over);
-    if (!over) return;
+    const task = tasks.find((t) => t.id === active.id);
+    if (!over || task?.status === over.id) return;
     mutate({ taskId: active.id as string, status: over.id as string });
   };
 

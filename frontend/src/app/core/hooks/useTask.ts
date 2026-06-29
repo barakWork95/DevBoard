@@ -1,5 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTask, updateTaskStatus } from "../services/taskService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createTask,
+  getTaskById,
+  updateTaskStatus,
+} from "../services/taskService";
 import type { CreateTask, Task } from "@devboard/shared";
 import type { AxiosResponse } from "axios";
 
@@ -11,6 +15,13 @@ export function useCreateTask(projectId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectTasks", projectId] });
     },
+  });
+}
+
+export function useTaskById(id: string) {
+  return useQuery({
+    queryKey: ["taskById", id],
+    queryFn: () => getTaskById(id),
   });
 }
 

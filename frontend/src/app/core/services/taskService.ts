@@ -11,3 +11,7 @@ export function updateTaskStatus(
 ) {
   return axiosInstance.patch(`/api/tasks/${taskId}/status`, data);
 }
+
+export function getTaskById(id: string) {
+  return axiosInstance.get(`/api/tasks/${id}`);
+}

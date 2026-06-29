@@ -2,30 +2,44 @@ import type { Task } from "@devboard/shared";
 import Card from "@mui/material/Card";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { useDraggable } from "@dnd-kit/core";
+import { useNavigate, useParams } from "react-router-dom";
 
 export interface TaskCardProps {
   task: Task;
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: task.id,
   });
 
+  const handleCardClicked = () => {
+    navigate(`/projects/${id}/tasks/${task.id}`);
+  };
+
   return (
     <Card
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       style={
         transform
           ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
           : undefined
       }
+      onClick={handleCardClicked}
       className="flex flex-col gap-5 p-5 w-[250px] cursor-pointer"
     >
-      <Typography variant="h4">{task.title}</Typography>
+      <div
+        {...attributes}
+        {...listeners}
+        className="flex items-center justify-between w-full cursor-grab w-fit"
+      >
+        <Typography variant="h4">{task.title}</Typography>
+        <DragIndicatorIcon fontSize="small" />
+      </div>
       <div className="flex flex-col gap-3">
         <Typography variant="caption">
           <strong>Labels: </strong>

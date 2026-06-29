@@ -21,7 +21,6 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    console.log("active:", active, "over:", over);
     const task = tasks.find((t) => t.id === active.id);
     if (!over || task?.status === over.id) return;
     mutate({ taskId: active.id as string, status: over.id as string });
@@ -29,7 +28,7 @@ export default function KanbanBoard({ projectId, tasks }: KanbanBoardProps) {
 
   return (
     <DndContext onDragEnd={onDragEnd}>
-      <div className="flex justify-center gap-1">
+      <div className="flex gap-3 overflow-x-auto pb-4">
         {Object.values(TaskStatuses).map((status) => (
           <KanbanColumn
             key={status}

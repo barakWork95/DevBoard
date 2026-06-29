@@ -42,6 +42,7 @@ export default function InviteMembersModal({
     flexDirection: "column",
     gap: "50px",
   };
+
   return (
     <Modal open={true} onClose={handleClose}>
       <Box sx={style}>

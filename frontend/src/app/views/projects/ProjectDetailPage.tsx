@@ -10,19 +10,21 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
-import Checkbox from "@mui/material/Checkbox";
 import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
-import type { ProjectMember, Task } from "@devboard/shared";
+import type { ProjectMember } from "@devboard/shared";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { useState } from "react";
 import InviteMembersModal from "./InviteMembersModal";
 import KanbanBoard from "./KanbanBoard";
+import { Button } from "@mui/material";
+import { CreateTaskModal } from "./CreateTaskModal";
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const {
     data: projectData,
     isLoading: isProjectLoading,
@@ -41,6 +43,9 @@ export default function ProjectDetailPage() {
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const handleOpenAddTask = () => setIsAddTaskModalOpen(true);
+  const handleCloseAddTask = () => setIsAddTaskModalOpen(false);
 
   const renderMembersLoadingState = () => {
     return <div>{/* members skeleton */}</div>;
@@ -84,7 +89,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      <div className="flex items-start gap-5 h-full w-full border rounded-sm p-3">
+      <div className="flex items-start gap-5 h-full w-full rounded-sm p-3">
         {/* TASKS */}
         <div className="flex-1 border-r">
           {isTasksLoading ? (
@@ -92,23 +97,15 @@ export default function ProjectDetailPage() {
           ) : isTasksError ? (
             renderTasksErrorState()
           ) : (
-            <div>
-              <div className="flex items-center gap-2">
-                <Checkbox />
-                <Typography variant="h6">Tasks:</Typography>
-              </div>
+            <div className="flex flex-col gap-2">
+              <Button
+                className="w-fit"
+                variant="contained"
+                onClick={handleOpenAddTask}
+              >
+                Add Task
+              </Button>
               <KanbanBoard tasks={tasksData?.data} />
-              {/* <List dense={true}>
-                {tasksData?.data?.map((task: Task) => (
-                  <ListItem key={task.id || task.title}>
-                    <Checkbox />
-                    <ListItemText
-                      primary={task.title}
-                      secondary={task.description}
-                    />
-                  </ListItem>
-                ))}
-              </List> */}
             </div>
           )}
         </div>
@@ -156,6 +153,13 @@ export default function ProjectDetailPage() {
         <InviteMembersModal
           projectId={id as string}
           onClose={handleCloseModal}
+        />
+      )}
+
+      {isAddTaskModalOpen && (
+        <CreateTaskModal
+          projectId={id as string}
+          onClose={handleCloseAddTask}
         />
       )}
     </div>

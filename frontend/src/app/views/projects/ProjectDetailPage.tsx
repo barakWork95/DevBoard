@@ -105,7 +105,7 @@ export default function ProjectDetailPage() {
               >
                 Add Task
               </Button>
-              <KanbanBoard tasks={tasksData?.data} />
+              <KanbanBoard projectId={id!} tasks={tasksData?.data} />
             </div>
           )}
         </div>

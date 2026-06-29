@@ -54,8 +54,28 @@ export const UpdateStatusSchema = z.object({
   status: z.enum(["BACKLOG", "IN_PROGRESS", "CODE_REVIEW", "DONE", "RELEASED"]),
 });
 
+export const TaskStatusSchema = z.enum([
+  "BACKLOG",
+  "IN_PROGRESS",
+  "CODE_REVIEW",
+  "DONE",
+  "RELEASED",
+]);
+export const TaskPrioritySchema = z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
+export const TaskLabelsSchema = z.enum([
+  "FE",
+  "BE",
+  "DEVOPS",
+  "QA",
+  "UI_UX",
+  "PM",
+]);
+
 export type Task = z.infer<typeof TaskSchema>;
 export type CreateTask = z.infer<typeof CreateTaskSchema>;
 export type UpdateTask = z.infer<typeof UpdateTaskSchema>;
 export type UpdateAssignee = z.infer<typeof UpdateAssigneeSchema>;
 export type UpdateStatus = z.infer<typeof UpdateStatusSchema>;
+export type TaskStatus = z.infer<typeof TaskStatusSchema>;
+export type TaskPriority = z.infer<typeof TaskPrioritySchema>;
+export type TaskLabels = z.infer<typeof TaskLabelsSchema>;
